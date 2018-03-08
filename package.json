@@ -1,0 +1,37 @@
+{
+  "name": "postcss-less2scss",
+  "version": "0.0.0",
+  "description": "PostCSS plugin to convert Less to SCSS",
+  "keywords": [
+    "postcss",
+    "css",
+    "postcss-plugin",
+    "less",
+    "scss",
+    "sass"
+  ],
+  "author": "fanshenggang <fanshenggang@jd.com>",
+  "license": "MIT",
+  "repository": "princetoad/postcss-less2scss",
+  "bugs": {
+    "url": "https://github.com/princetoad/postcss-less2scss/issues"
+  },
+  "homepage": "https://github.com/princetoad/postcss-less2scss",
+  "dependencies": {
+    "postcss": "^6.0.16"
+  },
+  "devDependencies": {
+    "eslint": "^4.15.0",
+    "eslint-config-postcss": "^2.0.2",
+    "jest": "^21.0.0"
+  },
+  "scripts": {
+    "test": "jest && eslint *.js"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-postcss/es5",
+    "env": {
+      "jest": true
+    }
+  }
+}
