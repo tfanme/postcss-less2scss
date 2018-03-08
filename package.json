@@ -10,7 +10,7 @@
     "scss",
     "sass"
   ],
-  "author": "fanshenggang <fanshenggang@jd.com>",
+  "author": "fanshenggang <tom@tfan.org>",
   "license": "MIT",
   "repository": "princetoad/postcss-less2scss",
   "bugs": {
