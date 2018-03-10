@@ -27,7 +27,8 @@
     "postcss-less": "^1.1.3"
   },
   "scripts": {
-    "test": "jest && eslint *.js"
+    "test": "jest && eslint *.js",
+    "test:watch": "jest --watch && eslint *.js"
   },
   "eslintConfig": {
     "extends": "eslint-config-postcss/es5",
