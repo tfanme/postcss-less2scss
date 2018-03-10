@@ -1,6 +1,6 @@
 {
   "name": "postcss-less2scss",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "PostCSS plugin to convert Less to SCSS",
   "keywords": [
     "postcss",
@@ -11,7 +11,7 @@
     "sass"
   ],
   "author": "fanshenggang <tom@tfan.org>",
-  "license": "MIT",
+  "license": "MPL-2.0",
   "repository": "princetoad/postcss-less2scss",
   "bugs": {
     "url": "https://github.com/princetoad/postcss-less2scss/issues"

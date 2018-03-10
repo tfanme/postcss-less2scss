@@ -304,3 +304,21 @@ it('variables - dont convert at-rule: @font-feature-values', () => {
     `;
     return run(input, input, {});
 });
+
+it('variables - dont convert @plugin At-rules of Less', () => {
+    var input = `
+        @plugin "my-plugin";
+        .show-me-pi {
+          value: pi();
+        }
+        .el-1 {
+            @plugin "lib1";
+            value: foo();
+        }
+        .el-2 {
+            @plugin "lib2";
+            value: foo();
+        }
+    `;
+    return run(input, input, {});
+});
