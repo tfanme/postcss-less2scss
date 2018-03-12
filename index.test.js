@@ -322,3 +322,59 @@ it('variables - dont convert @plugin At-rules of Less', () => {
     `;
     return run(input, input, {});
 });
+
+//
+// mixin
+//
+/**
+ * Real world example from bootstrap: https://github.com/twbs/bootstrap/blob/v3.4.0-dev/less/mixins/alerts.less
+ */
+it('mixin - definition', () => {
+    var input = `
+        .alert-variant(@background; @border; @text-color) {
+          background-color: @background;
+          border-color: @border;
+          color: @text-color;
+        
+          hr {
+            border-top-color: darken(@border, 5%);
+          }
+          .alert-link {
+            color: darken(@text-color, 10%);
+          }
+        }
+    `;
+    var output = `
+        @mixin alert-variant($background, $border, $text-color) {
+          background-color: $background;
+          border-color: $border;
+          color: $text-color;
+        
+          hr {
+            border-top-color: darken($border, 5%);
+          }
+          .alert-link {
+            color: darken($text-color, 10%);
+          }
+        }
+    `;
+    return run(input, output, {});
+});
+
+it('mixin - definition without params', () => {
+    var input = `
+        .center-block() {
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+        }
+    `;
+    var output = `
+        @mixin center-block() {
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+        }
+    `;
+    return run(input, output, {});
+});
