@@ -11,6 +11,7 @@ function run(input, output, opts) {
         });
 }
 
+/* eslint-disable max-len */
 //
 // variables
 //
@@ -321,4 +322,241 @@ it('variables - dont convert @plugin At-rules of Less', () => {
         }
     `;
     return run(input, input, {});
+});
+
+//
+// mixin
+//
+/**
+ * Real world example from bootstrap:
+ * https://github.com/twbs/bootstrap/blob/v3.4.0-dev/less/mixins/alerts.less
+ */
+it('mixin - definition', () => {
+    var input = `
+        .alert-variant(@background; @border; @text-color) {
+          background-color: @background;
+          border-color: @border;
+          color: @text-color;
+        
+          hr {
+            border-top-color: darken(@border, 5%);
+          }
+          .alert-link {
+            color: darken(@text-color, 10%);
+          }
+        }
+    `;
+    var output = `
+        @mixin alert-variant($background, $border, $text-color) {
+          background-color: $background;
+          border-color: $border;
+          color: $text-color;
+        
+          hr {
+            border-top-color: darken($border, 5%);
+          }
+          .alert-link {
+            color: darken($text-color, 10%);
+          }
+        }
+    `;
+    return run(input, output, {});
+});
+
+it('mixin - definition without params', () => {
+    var input = `
+        .center-block() {
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+        }
+    `;
+    var output = `
+        @mixin center-block() {
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+        }
+    `;
+    return run(input, output, {});
+});
+
+it('mixin - usage without parenthesis and parameters', () => {
+    var input = `
+        .a {
+            .center-block;
+        }
+    `;
+    var output = `
+        .a {
+            @include center-block;
+        }
+    `;
+    return run(input, output, {});
+});
+
+it('mixin - usage with parenthesis', () => {
+    var input = `
+        .a {
+            .center-block();
+        }
+    `;
+    var output = `
+        .a {
+            @include center-block();
+        }
+    `;
+    return run(input, output, {});
+});
+
+it('mixin - mixin usage - with parenthesis and parameters(convert spin to adjust_hue at the same time)', () => {
+    var input = `
+        @border-radius-base:        4px;
+        
+        //== Form states and alerts
+        //
+        //## Define colors for form feedback states and, by default, alerts.
+        
+        @state-success-text:             #3c763d;
+        @state-success-bg:               #dff0d8;
+        @state-success-border:           darken(spin(@state-success-bg, -10), 5%);
+        
+        @state-info-text:                #31708f;
+        @state-info-bg:                  #d9edf7;
+        @state-info-border:              darken(spin(@state-info-bg, -10), 7%);
+        
+        @state-warning-text:             #8a6d3b;
+        @state-warning-bg:               #fcf8e3;
+        @state-warning-border:           darken(spin(@state-warning-bg, -10), 5%);
+        
+        @state-danger-text:              #a94442;
+        @state-danger-bg:                #f2dede;
+        @state-danger-border:            darken(spin(@state-danger-bg, -10), 5%);
+        
+        //## Define alert colors, border radius, and padding.
+        
+        @alert-padding:               15px;
+        @alert-border-radius:         @border-radius-base;
+        @alert-link-font-weight:      bold;
+        
+        @alert-success-bg:            @state-success-bg;
+        @alert-success-text:          @state-success-text;
+        @alert-success-border:        @state-success-border;
+        
+        @alert-info-bg:               @state-info-bg;
+        @alert-info-text:             @state-info-text;
+        @alert-info-border:           @state-info-border;
+        
+        @alert-warning-bg:            @state-warning-bg;
+        @alert-warning-text:          @state-warning-text;
+        @alert-warning-border:        @state-warning-border;
+        
+        @alert-danger-bg:             @state-danger-bg;
+        @alert-danger-text:           @state-danger-text;
+        @alert-danger-border:         @state-danger-border;
+        
+        .alert-variant(@background; @border; @text-color) {
+          background-color: @background;
+          border-color: @border;
+          color: @text-color;
+        
+          hr {
+            border-top-color: darken(@border, 5%);
+          }
+          .alert-link {
+            color: darken(@text-color, 10%);
+          }
+        }
+        
+        .alert-success {
+          .alert-variant(@alert-success-bg; @alert-success-border; @alert-success-text);
+        }
+        
+        .alert-info {
+          .alert-variant(@alert-info-bg; @alert-info-border; @alert-info-text);
+        }
+        
+        .alert-warning {
+          .alert-variant(@alert-warning-bg; @alert-warning-border; @alert-warning-text);
+        }
+        
+        .alert-danger {
+          .alert-variant(@alert-danger-bg; @alert-danger-border; @alert-danger-text);
+        }
+    `;
+    var output = `
+        $border-radius-base:        4px;
+        
+        //== Form states and alerts
+        //
+        //## Define colors for form feedback states and, by default, alerts.
+        
+        $state-success-text:             #3c763d;
+        $state-success-bg:               #dff0d8;
+        $state-success-border:           darken(adjust_hue($state-success-bg, -10), 5%);
+        
+        $state-info-text:                #31708f;
+        $state-info-bg:                  #d9edf7;
+        $state-info-border:              darken(adjust_hue($state-info-bg, -10), 7%);
+        
+        $state-warning-text:             #8a6d3b;
+        $state-warning-bg:               #fcf8e3;
+        $state-warning-border:           darken(adjust_hue($state-warning-bg, -10), 5%);
+        
+        $state-danger-text:              #a94442;
+        $state-danger-bg:                #f2dede;
+        $state-danger-border:            darken(adjust_hue($state-danger-bg, -10), 5%);
+        
+        //## Define alert colors, border radius, and padding.
+        
+        $alert-padding:               15px;
+        $alert-border-radius:         $border-radius-base;
+        $alert-link-font-weight:      bold;
+        
+        $alert-success-bg:            $state-success-bg;
+        $alert-success-text:          $state-success-text;
+        $alert-success-border:        $state-success-border;
+        
+        $alert-info-bg:               $state-info-bg;
+        $alert-info-text:             $state-info-text;
+        $alert-info-border:           $state-info-border;
+        
+        $alert-warning-bg:            $state-warning-bg;
+        $alert-warning-text:          $state-warning-text;
+        $alert-warning-border:        $state-warning-border;
+        
+        $alert-danger-bg:             $state-danger-bg;
+        $alert-danger-text:           $state-danger-text;
+        $alert-danger-border:         $state-danger-border;
+        
+        @mixin alert-variant($background, $border, $text-color) {
+          background-color: $background;
+          border-color: $border;
+          color: $text-color;
+        
+          hr {
+            border-top-color: darken($border, 5%);
+          }
+          .alert-link {
+            color: darken($text-color, 10%);
+          }
+        }
+        
+        .alert-success {
+          @include alert-variant($alert-success-bg, $alert-success-border, $alert-success-text);
+        }
+        
+        .alert-info {
+          @include alert-variant($alert-info-bg, $alert-info-border, $alert-info-text);
+        }
+        
+        .alert-warning {
+          @include alert-variant($alert-warning-bg, $alert-warning-border, $alert-warning-text);
+        }
+        
+        .alert-danger {
+          @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
+        }
+    `;
+    return run(input, output, {});
 });
