@@ -1,6 +1,17 @@
 const postcss = require('postcss');
 
 /**
+ * Convert Less spin to SCSS adjust_hue()
+ */
+const convertSpin = (decl) => {
+    const spinRegex = /spin\(/;
+    if (decl.value.match(spinRegex)) {
+        decl.value = decl.value.replace(spinRegex, 'adjust_hue(');
+    }
+    return decl;
+};
+
+/**
  * variables convertion
  * @param root
  */
@@ -15,6 +26,7 @@ const handleVariables = (root) => {
     });
     root.walkDecls(decl => {
         console.log('decl.prop = ', decl.prop, ', decl.value = ', decl.value);
+        convertSpin(decl);
         const variableRegex = /@/;
         if (decl.prop.match(variableRegex)) {
             decl.prop = decl.prop.replace(variableRegex, '$');
@@ -47,6 +59,9 @@ const handleMixin = (root) => {
         // mixin usage
         if (mixin) {
             console.log('mixin usage, found, selector = ', selector);
+            rule.selector = selector.replace(/@/g, '$')
+                .replace(/;/g, ',')
+                .replace('.', '@include ');
         }
         // const variableRegex = /@/;
         // if (decl.prop.match(variableRegex)) {
