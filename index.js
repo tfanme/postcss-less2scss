@@ -1,14 +1,28 @@
 const postcss = require('postcss');
 
 /**
- * Convert Less spin to SCSS adjust_hue()
+ * Convert spin() function of Less to SCSS function adjust_hue()
+ * See also: http://lesscss.org/functions/#color-operations-spin
  */
-const convertSpin = (decl) => {
+const convertFunctionSpin = (decl) => {
     const spinRegex = /spin\(/;
     if (decl.value.match(spinRegex)) {
         decl.value = decl.value.replace(spinRegex, 'adjust_hue(');
     }
     return decl;
+};
+
+/**
+ * Convert CSS escaping
+ * See also: http://lesscss.org/functions/#string-functions-e
+ * node can be decl or rule
+ */
+const convertFunctionEscapeForCSS = (rule) => {
+    const regex = /~['"](.+)['"]/;
+    if (rule.selector.match(regex)) {
+        rule.selector = rule.selector.replace(regex, '#{$1}');
+    }
+    return rule;
 };
 
 /**
@@ -26,7 +40,7 @@ const handleVariables = (root) => {
     });
     root.walkDecls(decl => {
         console.log('decl.prop = ', decl.prop, ', decl.value = ', decl.value);
-        convertSpin(decl);
+        convertFunctionSpin(decl);
         const variableRegex = /@/g;
         if (decl.prop.match(variableRegex)) {
             decl.prop = decl.prop.replace(variableRegex, '$');
@@ -59,9 +73,14 @@ const handleMixin = (root) => {
         // mixin usage
         if (mixin) {
             console.log('mixin usage, found, selector = ', selector);
-            rule.selector = selector.replace(/@/g, '$')
+            // rule = convertFunctionEscapeForCSS(rule);
+            rule.selector = selector
+                .replace(/~['"](.+)['"]/, '#{$1}')
+                .replace(/@/g, '$')
                 .replace(/;/g, ',')
-                .replace('.', '@include ');
+                .replace('.', '@include ')
+            ;
+            console.log('after mixin conversion, rule = ', rule);
         }
         // const variableRegex = /@/;
         // if (decl.prop.match(variableRegex)) {
