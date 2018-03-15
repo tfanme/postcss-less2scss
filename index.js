@@ -27,7 +27,7 @@ const handleVariables = (root) => {
     root.walkDecls(decl => {
         console.log('decl.prop = ', decl.prop, ', decl.value = ', decl.value);
         convertSpin(decl);
-        const variableRegex = /@/;
+        const variableRegex = /@/g;
         if (decl.prop.match(variableRegex)) {
             decl.prop = decl.prop.replace(variableRegex, '$');
         }
