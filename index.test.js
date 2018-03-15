@@ -344,6 +344,32 @@ it('variables - dont convert @plugin At-rules of Less', () => {
     return run(input, input, {});
 });
 
+it('variable interpolation - Selectors', () => {
+    var input = `
+        // Variables
+        @my-selector: banner;
+        
+        // Usage
+        .@{my-selector} {
+          font-weight: bold;
+          line-height: 40px;
+          margin: 0 auto;
+        }
+    `;
+    var output = `
+        // Variables
+        $my-selector: banner;
+        
+        // Usage
+        .#{$my-selector} {
+          font-weight: bold;
+          line-height: 40px;
+          margin: 0 auto;
+        }
+    `;
+    return run(input, output, {});
+});
+
 //
 // mixin
 //
@@ -726,7 +752,7 @@ it('mixin - definition - with default parameters', () => {
 //
 // Functions
 //
-it.only('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
+it('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
     var input = `
         @input-border-focus:             #66afe9;
 
