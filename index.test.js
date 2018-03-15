@@ -726,7 +726,7 @@ it('mixin - definition - with default parameters', () => {
 //
 // Functions
 //
-it('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
+it.only('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
     var input = `
         @input-border-focus:             #66afe9;
 
@@ -774,6 +774,8 @@ it('Functions - string functions - e/~""(CSS escape with variable interpolation)
 
 it('Functions - string functions - e/~""(CSS escape without variable interpolation)', () => {
     var input = `
+        @input-border-focus:             #66afe9;
+
         .transition(@transition) {
           -webkit-transition: @transition;
                -o-transition: @transition;
@@ -787,22 +789,14 @@ it('Functions - string functions - e/~""(CSS escape without variable interpolati
     var output = `
         $input-border-focus:             #66afe9;
 
-        @mixin box-shadow($shadow) {
-          -webkit-box-shadow: $shadow; // iOS <4.3 & Android <4.1
-          box-shadow: $shadow;
-        }
-
-        @mixin form-control-focus($color: $input-border-focus) {
-            $color-rgba: rgba(red($color), green($color), blue($color), .6);
-        &:focus {
-                border-color: $color;
-                outline: 0;
-            @include box-shadow(#{inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px $color-rgba});
-            }
+        @mixin transition($transition) {
+          -webkit-transition: $transition;
+               -o-transition: $transition;
+                  transition: $transition;
         }
 
         .form-control {
-          @include form-control-focus();
+          @include transition(#{border-color ease-in-out .15s, box-shadow ease-in-out .15s});
         }
     `;
     return run(input, output, {});
