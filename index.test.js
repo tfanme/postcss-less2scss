@@ -122,6 +122,26 @@ it('variables - declaration & reference', () => {
     return run(input, output, {});
 });
 
+it('variables - multiple variables usage', () => {
+    var input = `
+        .button-size(@padding-vertical; @padding-horizontal; @font-size; @line-height; @border-radius) {
+          padding: @padding-vertical @padding-horizontal;
+          font-size: @font-size;
+          line-height: @line-height;
+          border-radius: @border-radius;
+        }
+    `;
+    var output = `
+        @mixin button-size($padding-vertical, $padding-horizontal, $font-size, $line-height, $border-radius) {
+          padding: $padding-vertical $padding-horizontal;
+          font-size: $font-size;
+          line-height: $line-height;
+          border-radius: $border-radius;
+        }
+    `;
+    return run(input, output, {});
+});
+
 it('variables - do not convert at-rule: @charset', () => {
     var input = '@charset "utf-8";';
     return run(input, input, {});
