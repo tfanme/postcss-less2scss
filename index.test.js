@@ -726,7 +726,7 @@ it('mixin - definition - with default parameters', () => {
 //
 // Functions
 //
-it('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
+it.only('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
     var input = `
         @input-border-focus:             #66afe9;
 
@@ -772,8 +772,10 @@ it('Functions - string functions - e/~""(CSS escape with variable interpolation)
     return run(input, output, {});
 });
 
-it.only('Functions - string functions - e/~""(CSS escape without variable interpolation)', () => {
+it('Functions - string functions - e/~""(CSS escape without variable interpolation)', () => {
     var input = `
+        @input-border-focus:             #66afe9;
+
         .transition(@transition) {
           -webkit-transition: @transition;
                -o-transition: @transition;
@@ -794,7 +796,7 @@ it.only('Functions - string functions - e/~""(CSS escape without variable interp
         }
 
         .form-control {
-          @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
+          @include transition(#{border-color ease-in-out .15s, box-shadow ease-in-out .15s});
         }
     `;
     return run(input, output, {});
