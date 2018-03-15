@@ -722,3 +722,88 @@ it('mixin - definition - with default parameters', () => {
     `;
     return run(input, output, {});
 });
+
+//
+// Functions
+//
+it('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
+    var input = `
+        @input-border-focus:             #66afe9;
+
+        .box-shadow(@shadow) {
+          -webkit-box-shadow: @shadow; // iOS <4.3 & Android <4.1
+          box-shadow: @shadow;
+        }
+
+        .form-control-focus(@color: @input-border-focus) {
+          @color-rgba: rgba(red(@color), green(@color), blue(@color), .6);
+          &:focus {
+            border-color: @color;
+            outline: 0;
+            .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px @{color-rgba}");
+          }
+        }
+
+        .form-control {
+          .form-control-focus();
+        }
+    `;
+    var output = `
+        $input-border-focus:             #66afe9;
+
+        @mixin box-shadow($shadow) {
+          -webkit-box-shadow: $shadow; // iOS <4.3 & Android <4.1
+          box-shadow: $shadow;
+        }
+
+        @mixin form-control-focus($color: $input-border-focus) {
+            $color-rgba: rgba(red($color), green($color), blue($color), .6);
+        &:focus {
+                border-color: $color;
+                outline: 0;
+            @include box-shadow(#{inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px $color-rgba});
+            }
+        }
+
+        .form-control {
+          @include form-control-focus();
+        }
+    `;
+    return run(input, output, {});
+});
+
+it('Functions - string functions - e/~""(CSS escape without variable interpolation)', () => {
+    var input = `
+        .transition(@transition) {
+          -webkit-transition: @transition;
+               -o-transition: @transition;
+                  transition: @transition;
+        }
+
+        .form-control {
+          .transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
+        }
+    `;
+    var output = `
+        $input-border-focus:             #66afe9;
+
+        @mixin box-shadow($shadow) {
+          -webkit-box-shadow: $shadow; // iOS <4.3 & Android <4.1
+          box-shadow: $shadow;
+        }
+
+        @mixin form-control-focus($color: $input-border-focus) {
+            $color-rgba: rgba(red($color), green($color), blue($color), .6);
+        &:focus {
+                border-color: $color;
+                outline: 0;
+            @include box-shadow(#{inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px $color-rgba});
+            }
+        }
+
+        .form-control {
+          @include form-control-focus();
+        }
+    `;
+    return run(input, output, {});
+});

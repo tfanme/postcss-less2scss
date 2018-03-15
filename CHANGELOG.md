@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.3
+Features:
+* Conversion for String Functions - CSS escaping, i.e., ~"" or ~'' added.
+
 ## 0.2.2
 Bug fix
 * Mismatch parametric mixins that have default values for their parameters.
