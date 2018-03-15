@@ -580,3 +580,145 @@ it('mixin - mixin usage - with parenthesis and parameters(convert spin to adjust
     `;
     return run(input, output, {});
 });
+
+it('mixin - definition - with default parameters', () => {
+    var input = `
+        @state-success-text:             #3c763d;
+        @state-success-bg:               #dff0d8;
+        @state-success-border:           darken(spin(@state-success-bg, -10), 5%);
+        
+        @state-info-text:                #31708f;
+        @state-info-bg:                  #d9edf7;
+        @state-info-border:              darken(spin(@state-info-bg, -10), 7%);
+        
+        @state-warning-text:             #8a6d3b;
+        @state-warning-bg:               #fcf8e3;
+        @state-warning-border:           darken(spin(@state-warning-bg, -10), 5%);
+        
+        @state-danger-text:              #a94442;
+        @state-danger-bg:                #f2dede;
+        @state-danger-border:            darken(spin(@state-danger-bg, -10), 5%);
+        
+        .box-shadow(@shadow) {
+          -webkit-box-shadow: @shadow; // iOS <4.3 & Android <4.1
+                  box-shadow: @shadow;
+        }
+        
+        .form-control-validation(@text-color: #555; @border-color: #ccc; @background-color: #f5f5f5) {
+          // Color the label and help text
+          .help-block,
+          .control-label,
+          .radio,
+          .checkbox,
+          .radio-inline,
+          .checkbox-inline,
+          &.radio label,
+          &.checkbox label,
+          &.radio-inline label,
+          &.checkbox-inline label  {
+            color: @text-color;
+          }
+          // Set the border and box shadow on specific inputs to match
+          .form-control {
+            border-color: @border-color;
+            .box-shadow(inset 0 1px 1px rgba(0,0,0,.075)); // Redeclare so transitions work
+            &:focus {
+              border-color: darken(@border-color, 10%);
+              @shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px lighten(@border-color, 20%);
+              .box-shadow(@shadow);
+            }
+          }
+          // Set validation states also for addons
+          .input-group-addon {
+            color: @text-color;
+            border-color: @border-color;
+            background-color: @background-color;
+          }
+          // Optional feedback icon
+          .form-control-feedback {
+            color: @text-color;
+          }
+        }
+        
+        // Feedback states
+        .has-success {
+          .form-control-validation(@state-success-text; @state-success-text; @state-success-bg);
+        }
+        .has-warning {
+          .form-control-validation(@state-warning-text; @state-warning-text; @state-warning-bg);
+        }
+        .has-error {
+          .form-control-validation(@state-danger-text; @state-danger-text; @state-danger-bg);
+        }
+    `;
+    var output = `
+        $state-success-text:             #3c763d;
+        $state-success-bg:               #dff0d8;
+        $state-success-border:           darken(adjust_hue($state-success-bg, -10), 5%);
+        
+        $state-info-text:                #31708f;
+        $state-info-bg:                  #d9edf7;
+        $state-info-border:              darken(adjust_hue($state-info-bg, -10), 7%);
+        
+        $state-warning-text:             #8a6d3b;
+        $state-warning-bg:               #fcf8e3;
+        $state-warning-border:           darken(adjust_hue($state-warning-bg, -10), 5%);
+        
+        $state-danger-text:              #a94442;
+        $state-danger-bg:                #f2dede;
+        $state-danger-border:            darken(adjust_hue($state-danger-bg, -10), 5%);
+        
+        @mixin box-shadow($shadow) {
+          -webkit-box-shadow: $shadow; // iOS <4.3 & Android <4.1
+                  box-shadow: $shadow;
+        }
+        
+        @mixin form-control-validation($text-color: #555, $border-color: #ccc, $background-color: #f5f5f5) {
+          // Color the label and help text
+          .help-block,
+          .control-label,
+          .radio,
+          .checkbox,
+          .radio-inline,
+          .checkbox-inline,
+          &.radio label,
+          &.checkbox label,
+          &.radio-inline label,
+          &.checkbox-inline label  {
+            color: $text-color;
+          }
+          // Set the border and box shadow on specific inputs to match
+          .form-control {
+            border-color: $border-color;
+            @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075)); // Redeclare so transitions work
+            &:focus {
+              border-color: darken($border-color, 10%);
+              $shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px lighten($border-color, 20%);
+              @include box-shadow($shadow);
+            }
+          }
+          // Set validation states also for addons
+          .input-group-addon {
+            color: $text-color;
+            border-color: $border-color;
+            background-color: $background-color;
+          }
+          // Optional feedback icon
+          .form-control-feedback {
+            color: $text-color;
+          }
+        }
+        
+        // Feedback states
+        .has-success {
+          @include form-control-validation($state-success-text, $state-success-text, $state-success-bg);
+        }
+        .has-warning {
+          @include form-control-validation($state-warning-text, $state-warning-text, $state-warning-bg);
+        }
+        .has-error {
+          @include form-control-validation($state-danger-text, $state-danger-text, $state-danger-bg);
+        }
+    `;
+    return run(input, output, {});
+});

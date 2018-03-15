@@ -50,7 +50,7 @@ const handleMixin = (root) => {
             ', rule.params = ', params,
             ', rule.mixin = ', mixin);
         // mixin definition
-        if (selector.match(/\.\S+\((@\S+;?\s?)*\)/)) {
+        if (selector.match(/\.\S+\((@\S+(:\s?\S+)?;?\s?)*\)/)) {
             console.log('mixin definition found, selector = ', selector);
             rule.selector = selector.replace(/@/g, '$')
                 .replace(/;/g, ',')
