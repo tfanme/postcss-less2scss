@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.1
+Bug fix:
+* Support variables conversion of at-rule parameters
+
 ## 0.4
 Features:
 * Conversion for variable interpolation as selector name added
