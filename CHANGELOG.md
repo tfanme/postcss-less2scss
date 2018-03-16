@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4
+Features:
+* Conversion for variable interpolation as selector name added
+
 ## 0.3
 Features:
 * Conversion for String Functions - CSS escaping, i.e., ~"" or ~'' added.
