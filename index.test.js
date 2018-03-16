@@ -783,12 +783,12 @@ it('Functions - string functions - e/~""(CSS escape with variable interpolation)
         }
 
         @mixin form-control-focus($color: $input-border-focus) {
-            $color-rgba: rgba(red($color), green($color), blue($color), .6);
-        &:focus {
-                border-color: $color;
-                outline: 0;
+          $color-rgba: rgba(red($color), green($color), blue($color), .6);
+          &:focus {
+            border-color: $color;
+            outline: 0;
             @include box-shadow(#{inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px $color-rgba});
-            }
+          }
         }
 
         .form-control {
