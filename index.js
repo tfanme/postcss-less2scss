@@ -31,13 +31,13 @@ const convertFunctionEscapeForCSS = (rule) => {
  */
 const handleVariables = (root) => {
     // variables declaration
-    root.walkAtRules(atRule => {
-        console.log('atRule = ', atRule);
-    });
-    root.walkRules(rule => {
-        console.log('rule = ', rule);
-        console.log('rule.empty = ', rule.empty);
-    });
+    // root.walkAtRules(atRule => {
+    //     console.log('atRule = ', atRule);
+    // });
+    // root.walkRules(rule => {
+    //     console.log('rule = ', rule);
+    //     console.log('rule.empty = ', rule.empty);
+    // });
     root.walkDecls(decl => {
         console.log('decl.prop = ', decl.prop, ', decl.value = ', decl.value);
         convertFunctionSpin(decl);
@@ -63,6 +63,11 @@ const handleMixin = (root) => {
         console.log('rule.selector = ', selector,
             ', rule.params = ', params,
             ', rule.mixin = ', mixin);
+        // variables interpolation
+        if (selector.match(/\.@{(\S+)}/) && !selector.match(/~['"](.+)['"]/)) {
+            console.log('variable interpolation found, selector = ', selector);
+            rule.selector = selector.replace(/\.@{(\S+)}/g, '.#{$$$1}');
+        }
         // mixin definition
         if (selector.match(/\.\S+\((@\S+(:\s?\S+)?;?\s?)*\)/)) {
             console.log('mixin definition found, selector = ', selector);
@@ -76,19 +81,13 @@ const handleMixin = (root) => {
             // rule = convertFunctionEscapeForCSS(rule);
             rule.selector = selector
                 .replace(/~['"](.+)['"]/, '#{$1}')
+                .replace(/@{(\S+)}/, '$$$1')
                 .replace(/@/g, '$')
                 .replace(/;/g, ',')
                 .replace('.', '@include ')
             ;
             console.log('after mixin conversion, rule = ', rule);
         }
-        // const variableRegex = /@/;
-        // if (decl.prop.match(variableRegex)) {
-        //     decl.prop = decl.prop.replace(variableRegex, '$');
-        // }
-        // if (decl.value.match(variableRegex)) {
-        //     decl.value = decl.value.replace(variableRegex, '$');
-        // }
     });
     // variables reference
 };
