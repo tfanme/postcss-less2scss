@@ -26,18 +26,25 @@ const convertFunctionEscapeForCSS = (rule) => {
 };
 
 /**
- * variables convertion
+ * Conversion of at-rules
  * @param root
  */
-const handleVariables = (root) => {
-    // variables declaration
-    // root.walkAtRules(atRule => {
-    //     console.log('atRule = ', atRule);
-    // });
-    // root.walkRules(rule => {
-    //     console.log('rule = ', rule);
-    //     console.log('rule.empty = ', rule.empty);
-    // });
+const handleAtRules = (root) => {
+    root.walkAtRules(atRule => {
+        console.log('atrule = ', atRule);
+        const variableRegex = /@/g;
+        if (atRule.params.match(variableRegex)) {
+            atRule.params = atRule.params.replace(variableRegex, '$');
+        }
+    });
+    // variables reference
+};
+
+/**
+ * Conversion of declarations
+ * @param root
+ */
+const handleDecls = (root) => {
     root.walkDecls(decl => {
         console.log('decl.prop = ', decl.prop, ', decl.value = ', decl.value);
         convertFunctionSpin(decl);
@@ -53,10 +60,10 @@ const handleVariables = (root) => {
 };
 
 /**
- * mix-in convertion
+ * Conversion of rules
  * @param root
  */
-const handleMixin = (root) => {
+const handleRules = (root) => {
     // mix-in properties from existing styles
     root.walkRules(rule => {
         const { selector, params, mixin } = rule;
@@ -99,7 +106,8 @@ module.exports = postcss.plugin('postcss-less2scss', function (opts) {
 
     return function (root) {
         // Transform CSS AST here
-        handleVariables(root);
-        handleMixin(root);
+        handleAtRules(root);
+        handleDecls(root);
+        handleRules(root);
     };
 });

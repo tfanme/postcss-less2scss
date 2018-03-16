@@ -370,6 +370,44 @@ it('variable interpolation - Selectors', () => {
     return run(input, output, {});
 });
 
+it('variable interpolation - for at-rule, such as @media', () => {
+    var input = `
+        @screen-sm:                  768px;
+        @screen-sm-min:              @screen-sm;
+        
+        .form-inline {
+        
+          // Kick in the inline
+          @media (min-width: @screen-sm-min) {
+            // Inline-block all the things for "inline"
+            .form-group {
+              display: inline-block;
+              margin-bottom: 0;
+              vertical-align: middle;
+            }
+          }
+        }
+    `;
+    var output = `
+        $screen-sm:                  768px;
+        $screen-sm-min:              $screen-sm;
+        
+        .form-inline {
+        
+          // Kick in the inline
+          @media (min-width: $screen-sm-min) {
+            // Inline-block all the things for "inline"
+            .form-group {
+              display: inline-block;
+              margin-bottom: 0;
+              vertical-align: middle;
+            }
+          }
+        }
+    `;
+    return run(input, output, {});
+});
+
 //
 // mixin
 //
