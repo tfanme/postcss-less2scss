@@ -344,6 +344,32 @@ it('variables - dont convert @plugin At-rules of Less', () => {
     return run(input, input, {});
 });
 
+it('variable interpolation - Selectors', () => {
+    var input = `
+        // Variables
+        @my-selector: banner;
+        
+        // Usage
+        .@{my-selector} {
+          font-weight: bold;
+          line-height: 40px;
+          margin: 0 auto;
+        }
+    `;
+    var output = `
+        // Variables
+        $my-selector: banner;
+        
+        // Usage
+        .#{$my-selector} {
+          font-weight: bold;
+          line-height: 40px;
+          margin: 0 auto;
+        }
+    `;
+    return run(input, output, {});
+});
+
 //
 // mixin
 //
@@ -726,7 +752,7 @@ it('mixin - definition - with default parameters', () => {
 //
 // Functions
 //
-it.only('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
+it('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
     var input = `
         @input-border-focus:             #66afe9;
 
@@ -757,12 +783,12 @@ it.only('Functions - string functions - e/~""(CSS escape with variable interpola
         }
 
         @mixin form-control-focus($color: $input-border-focus) {
-            $color-rgba: rgba(red($color), green($color), blue($color), .6);
-        &:focus {
-                border-color: $color;
-                outline: 0;
+          $color-rgba: rgba(red($color), green($color), blue($color), .6);
+          &:focus {
+            border-color: $color;
+            outline: 0;
             @include box-shadow(#{inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px $color-rgba});
-            }
+          }
         }
 
         .form-control {
