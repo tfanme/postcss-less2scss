@@ -5,9 +5,10 @@ var stringify = less.stringifier;
 var plugin = require('./');
 
 function run(input, output, opts) {
-    return postcss([plugin(opts)]).process(input, { syntax: less.parser, stringifier: stringify })
+    return postcss([plugin(opts)]).process(input, { syntax: less, stringifier: stringify })
         .then(result => {
-            expect(result.css).toEqual(output);
+            // expect(result.css).toEqual(output);
+            expect(result.content).toEqual(output);
             expect(result.warnings().length).toBe(0);
         });
 }
@@ -870,7 +871,7 @@ it('Functions - string functions - e/~""(CSS escape without variable interpolati
 //
 // @import At-Rules
 //
-it.only('@import At-Rules - File Extensions', () => {
+it('@import At-Rules - File Extensions', () => {
     var input = `
         @import "foo";
         @import "foo.less";
@@ -882,6 +883,108 @@ it.only('@import At-Rules - File Extensions', () => {
         @import "foo";
         @import "foo";
         @import "foo.css";
+    `;
+    return run(input, output, {});
+});
+
+it('@import At-Rules - File Extensions - bs example', () => {
+    var input = `
+        // with folder
+        @import "mixins/alerts.less";
+        // comment
+        @import "variables.less";
+        @import "mixins.less";
+        
+        @import "normalize.less";
+        @import "print.less";
+        @import "glyphicons.less";
+        
+        @import "scaffolding.less";
+        @import "type.less";
+        @import "code.less";
+        @import "grid.less";
+        @import "tables.less";
+        @import "forms.less";
+        @import "buttons.less";
+        
+        @import "component-animations.less";
+        @import "dropdowns.less";
+        @import "button-groups.less";
+        @import "input-groups.less";
+        @import "navs.less";
+        @import "navbar.less";
+        @import "breadcrumbs.less";
+        @import "pagination.less";
+        @import "pager.less";
+        @import "labels.less";
+        @import "badges.less";
+        @import "jumbotron.less";
+        @import "thumbnails.less";
+        @import "alerts.less";
+        @import "progress-bars.less";
+        @import "media.less";
+        @import "list-group.less";
+        @import "panels.less";
+        @import "responsive-embed.less";
+        @import "wells.less";
+        @import "close.less";
+        
+        @import "modals.less";
+        @import "tooltip.less";
+        @import "popovers.less";
+        @import "carousel.less";
+        
+        @import "utilities.less";
+        @import "responsive-utilities.less";
+    `;
+    var output = `
+        // with folder
+        @import "mixins/alerts";
+        // comment
+        @import "variables";
+        @import "mixins";
+        
+        @import "normalize";
+        @import "print";
+        @import "glyphicons";
+        
+        @import "scaffolding";
+        @import "type";
+        @import "code";
+        @import "grid";
+        @import "tables";
+        @import "forms";
+        @import "buttons";
+        
+        @import "component-animations";
+        @import "dropdowns";
+        @import "button-groups";
+        @import "input-groups";
+        @import "navs";
+        @import "navbar";
+        @import "breadcrumbs";
+        @import "pagination";
+        @import "pager";
+        @import "labels";
+        @import "badges";
+        @import "jumbotron";
+        @import "thumbnails";
+        @import "alerts";
+        @import "progress-bars";
+        @import "media";
+        @import "list-group";
+        @import "panels";
+        @import "responsive-embed";
+        @import "wells";
+        @import "close";
+        
+        @import "modals";
+        @import "tooltip";
+        @import "popovers";
+        @import "carousel";
+        
+        @import "utilities";
+        @import "responsive-utilities";
     `;
     return run(input, output, {});
 });
