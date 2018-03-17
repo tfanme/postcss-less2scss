@@ -1,10 +1,11 @@
 var postcss = require('postcss');
 var less = require('postcss-less');
+var stringify = less.stringifier;
 
 var plugin = require('./');
 
 function run(input, output, opts) {
-    return postcss([plugin(opts)]).process(input, { syntax: less })
+    return postcss([plugin(opts)]).process(input, { syntax: less.parser, stringifier: stringify })
         .then(result => {
             expect(result.css).toEqual(output);
             expect(result.warnings().length).toBe(0);
@@ -865,3 +866,23 @@ it('Functions - string functions - e/~""(CSS escape without variable interpolati
     `;
     return run(input, output, {});
 });
+
+//
+// @import At-Rules
+//
+it.only('@import At-Rules - File Extensions', () => {
+    var input = `
+        @import "foo";
+        @import "foo.less";
+        @import "foo.php";
+        @import "foo.css";
+    `;
+    var output = `
+        @import "foo";
+        @import "foo";
+        @import "foo";
+        @import "foo.css";
+    `;
+    return run(input, output, {});
+});
+

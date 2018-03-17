@@ -30,14 +30,21 @@ const convertFunctionEscapeForCSS = (rule) => {
  * @param root
  */
 const handleAtRules = (root) => {
-    root.walkAtRules(atRule => {
-        console.log('atrule = ', atRule);
+    const result = root.walkAtRules(atRule => {
+        console.log('AtRule = ', atRule);
+        // variables usage
         const variableRegex = /@/g;
         if (atRule.params.match(variableRegex)) {
             atRule.params = atRule.params.replace(variableRegex, '$');
         }
+        // convert file extension of @import At-Rules
+        if (atRule.name === 'import' && !atRule.params.match(/\.css/) && atRule.params.match(/['"]([a-z0-9-_]+)(\.\S+)?['"]/)) {
+            atRule.params = atRule.params.replace(/['"]([a-z0-9-_]+)(\.\S+)?['"]/, '"$1"')
+        }
     });
-    // variables reference
+    if (!result) {
+        console.log('walkAtRules failed');
+    }
 };
 
 /**
@@ -45,7 +52,7 @@ const handleAtRules = (root) => {
  * @param root
  */
 const handleDecls = (root) => {
-    root.walkDecls(decl => {
+    const result = root.walkDecls(decl => {
         console.log('decl.prop = ', decl.prop, ', decl.value = ', decl.value);
         convertFunctionSpin(decl);
         const variableRegex = /@/g;
@@ -56,7 +63,9 @@ const handleDecls = (root) => {
             decl.value = decl.value.replace(variableRegex, '$');
         }
     });
-    // variables reference
+    if (!result) {
+        console.log('walkDecls iteration was broke');
+    }
 };
 
 /**
