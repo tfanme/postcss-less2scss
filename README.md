@@ -23,6 +23,7 @@ $link-color: #428bca;
 ```
 
 * Variables - Declaration inside nested rules
+
 Less:
 ```less
 #main {
@@ -40,6 +41,7 @@ Scss:
 ```
 
 * Variables - Reference as a single value or part of a value
+
 Less:
 ```less
 @text-color: @gray-dark;
@@ -53,6 +55,7 @@ $link-color-hover:  darken($link-color, 10%);
 ```
 
 * Variables - Reference as a single value or part of a value in nested rules
+
 Less:
 ```less
 a:hover {
@@ -68,6 +71,7 @@ a:hover {
 ```
 
 * Convert variables inside At-Rules
+
 Less:
 ```less
 @screen-sm:                  768px;
@@ -109,6 +113,7 @@ $screen-sm-min:              $screen-sm;
 ### Variable Interpolation
 
 * Convert selectors
+
 Less:
 ```less
 // Variables
@@ -137,6 +142,7 @@ $my-selector: banner;
 ## Mixins conversion
 
 * Convert mixins definition
+
 Less:
 ```less
 .alert-variant(@background; @border; @text-color) {
@@ -170,6 +176,7 @@ Scss:
 ```
 
 * Convert mixins usage
+
 Less:
 ```less
 .a {
@@ -185,6 +192,7 @@ Scss:
 ```
 
 * Support default value of parameters
+
 Less:
 ```less
 @state-success-text:             #3c763d;
@@ -332,6 +340,7 @@ $state-danger-border:            darken(adjust_hue($state-danger-bg, -10), 5%);
 ### String Functions
 
 * Conver CSS escapting, i.e. ~"xxx"
+
 Less:
 ```less
 @input-border-focus:             #66afe9;
@@ -378,7 +387,21 @@ $input-border-focus:             #66afe9;
 }
 ```
 
+### Color Functions
+* Convert spin() to adjust_hue()
+
+Less:
+```less
+@state-success-border:           darken(spin(@state-success-bg, -10), 5%);
+```
+
+Scss:
+```scss
+$state-success-border:           darken(adjust_hue($state-success-bg, -10), 5%);
+```
+
 ## @import At-Rules
+
 Less:
 ```less
 @import "foo";
