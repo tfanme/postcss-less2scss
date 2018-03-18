@@ -792,7 +792,7 @@ it('mixin - definition - with default parameters', () => {
 //
 // Functions
 //
-it('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
+it('Functions - string functions - e/~""(CSS escape with variable interpolation) - inside mixin usage', () => {
     var input = `
         @input-border-focus:             #66afe9;
 
@@ -838,7 +838,7 @@ it('Functions - string functions - e/~""(CSS escape with variable interpolation)
     return run(input, output, {});
 });
 
-it('Functions - string functions - e/~""(CSS escape without variable interpolation)', () => {
+it('Functions - string functions - e/~""(CSS escape without variable interpolation) - inside mixin usage', () => {
     var input = `
         @input-border-focus:             #66afe9;
 
@@ -863,6 +863,46 @@ it('Functions - string functions - e/~""(CSS escape without variable interpolati
 
         .form-control {
           @include transition(#{border-color ease-in-out .15s, box-shadow ease-in-out .15s});
+        }
+    `;
+    return run(input, output, {});
+});
+
+it('Functions - string functions - e/~"" - inside declaration values', () => {
+    var input = `
+        .hide-text() {
+          font: ~"0/0" a;
+          color: transparent;
+          text-shadow: none;
+          background-color: transparent;
+          border: 0;
+        }
+        
+        // New mixin to use as of v3.0.1
+        .text-hide() {
+          .hide-text();
+        }
+
+        .text-hide {
+          .text-hide();
+        }
+    `;
+    var output = `
+        @mixin hide-text() {
+          font: #{0/0} a;
+          color: transparent;
+          text-shadow: none;
+          background-color: transparent;
+          border: 0;
+        }
+        
+        // New mixin to use as of v3.0.1
+        @mixin text-hide() {
+          @include hide-text();
+        }
+
+        .text-hide {
+          @include text-hide();
         }
     `;
     return run(input, output, {});

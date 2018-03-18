@@ -83,12 +83,16 @@ const handleDecls = (root) => {
         console.log('decl.prop = ', decl.prop, ', decl.value = ', decl.value);
         convertFunctionSpin(decl);
         const variableRegex = /@/g;
+        // variable inside properties
         if (decl.prop.match(variableRegex)) {
             decl.prop = decl.prop.replace(variableRegex, '$');
         }
+        // variable inside values
         if (decl.value.match(variableRegex)) {
             decl.value = decl.value.replace(variableRegex, '$');
         }
+        // CSS escaping
+        decl.value = decl.value.replace(/~['"](.+)['"]/, '#{$1}')
     });
     if (!result) {
         console.log('walkDecls iteration was broke');
@@ -99,12 +103,16 @@ const handleDecl = (decl) => {
     console.log('decl.prop = ', decl.prop, ', decl.value = ', decl.value);
     convertFunctionSpin(decl);
     const variableRegex = /@/g;
+    // variable inside properties
     if (decl.prop.match(variableRegex)) {
         decl.prop = decl.prop.replace(variableRegex, '$');
     }
+    // variable inside values
     if (decl.value.match(variableRegex)) {
         decl.value = decl.value.replace(variableRegex, '$');
     }
+    // CSS escaping
+    decl.value = decl.value.replace(/~['"](.+)['"]/, '#{$1}')
 };
 
 /**

@@ -1,7 +1,11 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-#0.5.0
+## 0.5.1
+Bug fix:
+* Added CSS escaping conversion inside declaration values
+
+## 0.5.0
 Feature:
 * Convert file extension for @import at-rules
 
