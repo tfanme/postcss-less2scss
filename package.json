@@ -1,6 +1,6 @@
 {
   "name": "postcss-less2scss",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "PostCSS plugin to convert Less to SCSS",
   "keywords": [
     "postcss",

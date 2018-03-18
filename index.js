@@ -101,7 +101,14 @@ const handleDecls = (root) => {
 
 const handleDecl = (decl) => {
     console.log('decl.prop = ', decl.prop, ', decl.value = ', decl.value);
+
     convertFunctionSpin(decl);
+
+    // CSS escaping
+    decl.value = decl.value
+        .replace(/@{(\S+)}/, '$$$1')
+        .replace(/~['"](.+)['"]/, '#{$1}');
+
     const variableRegex = /@/g;
     // variable inside properties
     if (decl.prop.match(variableRegex)) {
@@ -111,8 +118,6 @@ const handleDecl = (decl) => {
     if (decl.value.match(variableRegex)) {
         decl.value = decl.value.replace(variableRegex, '$');
     }
-    // CSS escaping
-    decl.value = decl.value.replace(/~['"](.+)['"]/, '#{$1}')
 };
 
 /**

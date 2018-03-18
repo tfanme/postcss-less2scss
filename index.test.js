@@ -908,6 +908,52 @@ it('Functions - string functions - e/~"" - inside declaration values', () => {
     return run(input, output, {});
 });
 
+it('Functions - string functions - e/~"" - with variable interpolation', () => {
+    var input = `
+        @modal-backdrop-opacity:      .5;
+        
+        .opacity(@opacity) {
+          opacity: @opacity;
+          // IE8 filter
+          @opacity-ie: (@opacity * 100);
+          filter: ~"alpha(opacity=@{opacity-ie})";
+        }
+        
+        .modal-backdrop {
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          // Fade for backdrop
+          &.fade { .opacity(0); }
+          &.in { .opacity(@modal-backdrop-opacity); }
+        }
+    `;
+    var output = `
+        $modal-backdrop-opacity:      .5;
+        
+        @mixin opacity($opacity) {
+          opacity: $opacity;
+          // IE8 filter
+          $opacity-ie: ($opacity * 100);
+          filter: #{alpha(opacity=$opacity-ie)};
+        }
+        
+        .modal-backdrop {
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          // Fade for backdrop
+          &.fade { @include opacity(0); }
+          &.in { @include opacity($modal-backdrop-opacity); }
+        }
+    `;
+    return run(input, output, {});
+});
+
 //
 // @import At-Rules
 //

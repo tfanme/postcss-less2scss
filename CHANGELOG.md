@@ -1,7 +1,7 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 0.5.1
+## 0.5.2
 Bug fix:
 * Added CSS escaping conversion inside declaration values
 
