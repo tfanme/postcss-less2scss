@@ -1,12 +1,14 @@
 var postcss = require('postcss');
 var less = require('postcss-less');
+var stringify = less.stringifier;
 
 var plugin = require('./');
 
 function run(input, output, opts) {
-    return postcss([plugin(opts)]).process(input, { syntax: less })
+    return postcss([plugin(opts)]).process(input, { syntax: less, stringifier: stringify })
         .then(result => {
-            expect(result.css).toEqual(output);
+            // expect(result.css).toEqual(output);
+            expect(result.content).toEqual(output);
             expect(result.warnings().length).toBe(0);
         });
 }
@@ -790,7 +792,7 @@ it('mixin - definition - with default parameters', () => {
 //
 // Functions
 //
-it('Functions - string functions - e/~""(CSS escape with variable interpolation)', () => {
+it('Functions - string functions - e/~""(CSS escape with variable interpolation) - inside mixin usage', () => {
     var input = `
         @input-border-focus:             #66afe9;
 
@@ -836,7 +838,7 @@ it('Functions - string functions - e/~""(CSS escape with variable interpolation)
     return run(input, output, {});
 });
 
-it('Functions - string functions - e/~""(CSS escape without variable interpolation)', () => {
+it('Functions - string functions - e/~""(CSS escape without variable interpolation) - inside mixin usage', () => {
     var input = `
         @input-border-focus:             #66afe9;
 
@@ -865,3 +867,211 @@ it('Functions - string functions - e/~""(CSS escape without variable interpolati
     `;
     return run(input, output, {});
 });
+
+it('Functions - string functions - e/~"" - inside declaration values', () => {
+    var input = `
+        .hide-text() {
+          font: ~"0/0" a;
+          color: transparent;
+          text-shadow: none;
+          background-color: transparent;
+          border: 0;
+        }
+        
+        // New mixin to use as of v3.0.1
+        .text-hide() {
+          .hide-text();
+        }
+
+        .text-hide {
+          .text-hide();
+        }
+    `;
+    var output = `
+        @mixin hide-text() {
+          font: #{0/0} a;
+          color: transparent;
+          text-shadow: none;
+          background-color: transparent;
+          border: 0;
+        }
+        
+        // New mixin to use as of v3.0.1
+        @mixin text-hide() {
+          @include hide-text();
+        }
+
+        .text-hide {
+          @include text-hide();
+        }
+    `;
+    return run(input, output, {});
+});
+
+it('Functions - string functions - e/~"" - with variable interpolation', () => {
+    var input = `
+        @modal-backdrop-opacity:      .5;
+        
+        .opacity(@opacity) {
+          opacity: @opacity;
+          // IE8 filter
+          @opacity-ie: (@opacity * 100);
+          filter: ~"alpha(opacity=@{opacity-ie})";
+        }
+        
+        .modal-backdrop {
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          // Fade for backdrop
+          &.fade { .opacity(0); }
+          &.in { .opacity(@modal-backdrop-opacity); }
+        }
+    `;
+    var output = `
+        $modal-backdrop-opacity:      .5;
+        
+        @mixin opacity($opacity) {
+          opacity: $opacity;
+          // IE8 filter
+          $opacity-ie: ($opacity * 100);
+          filter: #{alpha(opacity=$opacity-ie)};
+        }
+        
+        .modal-backdrop {
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          // Fade for backdrop
+          &.fade { @include opacity(0); }
+          &.in { @include opacity($modal-backdrop-opacity); }
+        }
+    `;
+    return run(input, output, {});
+});
+
+//
+// @import At-Rules
+//
+it('@import At-Rules - File Extensions', () => {
+    var input = `
+        @import "foo";
+        @import "foo.less";
+        @import "foo.php";
+        @import "foo.css";
+    `;
+    var output = `
+        @import "foo";
+        @import "foo";
+        @import "foo";
+        @import "foo.css";
+    `;
+    return run(input, output, {});
+});
+
+it('@import At-Rules - File Extensions - bs example', () => {
+    var input = `
+        // with folder
+        @import "mixins/alerts.less";
+        // comment
+        @import "variables.less";
+        @import "mixins.less";
+        
+        @import "normalize.less";
+        @import "print.less";
+        @import "glyphicons.less";
+        
+        @import "scaffolding.less";
+        @import "type.less";
+        @import "code.less";
+        @import "grid.less";
+        @import "tables.less";
+        @import "forms.less";
+        @import "buttons.less";
+        
+        @import "component-animations.less";
+        @import "dropdowns.less";
+        @import "button-groups.less";
+        @import "input-groups.less";
+        @import "navs.less";
+        @import "navbar.less";
+        @import "breadcrumbs.less";
+        @import "pagination.less";
+        @import "pager.less";
+        @import "labels.less";
+        @import "badges.less";
+        @import "jumbotron.less";
+        @import "thumbnails.less";
+        @import "alerts.less";
+        @import "progress-bars.less";
+        @import "media.less";
+        @import "list-group.less";
+        @import "panels.less";
+        @import "responsive-embed.less";
+        @import "wells.less";
+        @import "close.less";
+        
+        @import "modals.less";
+        @import "tooltip.less";
+        @import "popovers.less";
+        @import "carousel.less";
+        
+        @import "utilities.less";
+        @import "responsive-utilities.less";
+    `;
+    var output = `
+        // with folder
+        @import "mixins/alerts";
+        // comment
+        @import "variables";
+        @import "mixins";
+        
+        @import "normalize";
+        @import "print";
+        @import "glyphicons";
+        
+        @import "scaffolding";
+        @import "type";
+        @import "code";
+        @import "grid";
+        @import "tables";
+        @import "forms";
+        @import "buttons";
+        
+        @import "component-animations";
+        @import "dropdowns";
+        @import "button-groups";
+        @import "input-groups";
+        @import "navs";
+        @import "navbar";
+        @import "breadcrumbs";
+        @import "pagination";
+        @import "pager";
+        @import "labels";
+        @import "badges";
+        @import "jumbotron";
+        @import "thumbnails";
+        @import "alerts";
+        @import "progress-bars";
+        @import "media";
+        @import "list-group";
+        @import "panels";
+        @import "responsive-embed";
+        @import "wells";
+        @import "close";
+        
+        @import "modals";
+        @import "tooltip";
+        @import "popovers";
+        @import "carousel";
+        
+        @import "utilities";
+        @import "responsive-utilities";
+    `;
+    return run(input, output, {});
+});
+
