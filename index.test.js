@@ -5,7 +5,8 @@ var stringify = less.stringifier;
 var plugin = require('./');
 
 function run(input, output, opts) {
-    return postcss([plugin(opts)]).process(input, { syntax: less, stringifier: stringify })
+    return postcss([plugin(opts)])
+        .process(input, { syntax: less, stringifier: stringify })
         .then(result => {
             // expect(result.css).toEqual(output);
             expect(result.content).toEqual(output);
