@@ -1,17 +1,17 @@
-var postcss = require('postcss');
-var less = require('postcss-less');
-var stringify = less.stringifier;
+let postcss = require('postcss')
+let less = require('postcss-less')
+let stringify = less.stringifier
 
-var plugin = require('./');
+let plugin = require('./')
 
-function run(input, output, opts) {
-    return postcss([plugin(opts)])
-        .process(input, { syntax: less, stringifier: stringify })
-        .then(result => {
-            // expect(result.css).toEqual(output);
-            expect(result.content).toEqual(output);
-            expect(result.warnings().length).toBe(0);
-        });
+function run (input, output, opts) {
+  return postcss([plugin(opts)])
+    .process(input, { syntax: less, stringifier: stringify })
+    .then(result => {
+      // expect(result.css).toEqual(output);
+      expect(result.content).toEqual(output)
+      expect(result.warnings()).toHaveLength(0)
+    })
 }
 
 /* eslint-disable max-len */
@@ -22,71 +22,55 @@ function run(input, output, opts) {
  * variables
  */
 it('variables - declaration outof any rules', () => {
-    var input = '@link-color: #428bca;';
-    var output = '$link-color: #428bca;';
-    return run(input, output, {});
-});
+  let input = '@link-color: #428bca;'
+  let output = '$link-color: #428bca;'
+  return run(input, output, {})
+})
 
 it('variables - declaration inside nested rules', () => {
-    var input = `
+  let input = `
         #main {
           @width: 5em;
           width: @width;
         }
-    `;
-    var output = `
+    `
+  let output = `
         #main {
           $width: 5em;
           width: $width;
         }
-    `;
-    return run(input, output, {});
-});
-
-it('variables - declaration inside nested rules', () => {
-    var input = `
-        #main {
-          @width: 5em;
-          width: @width;
-        }
-    `;
-    var output = `
-        #main {
-          $width: 5em;
-          width: $width;
-        }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('variables - reference as a single value or part of a value', () => {
-    var input = `
+  let input = `
         @text-color: @gray-dark;
         @link-color-hover:  darken(@link-color, 10%);
-    `;
-    var output = `
+    `
+  let output = `
         $text-color: $gray-dark;
         $link-color-hover:  darken($link-color, 10%);
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('variables - reference in nested rules', () => {
-    var input = `
+  let input = `
         a:hover {
           color: @link-color-hover;
         }
-    `;
-    var output = `
+    `
+  let output = `
         a:hover {
           color: $link-color-hover;
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('variables - declaration & reference', () => {
-    var input = `
+  let input = `
         // Variables
         @link-color:        #428bca; // sea blue
         @link-color-hover:  darken(@link-color, 10%);
@@ -103,8 +87,8 @@ it('variables - declaration & reference', () => {
           color: #fff;
           background: @link-color;
         }
-    `;
-    var output = `
+    `
+  let output = `
         // Variables
         $link-color:        #428bca; // sea blue
         $link-color-hover:  darken($link-color, 10%);
@@ -121,34 +105,34 @@ it('variables - declaration & reference', () => {
           color: #fff;
           background: $link-color;
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('variables - multiple variables usage', () => {
-    var input = `
+  let input = `
         .button-size(@padding-vertical; @padding-horizontal; @font-size; @line-height; @border-radius) {
           padding: @padding-vertical @padding-horizontal;
           font-size: @font-size;
           line-height: @line-height;
           border-radius: @border-radius;
         }
-    `;
-    var output = `
+    `
+  let output = `
         @mixin button-size($padding-vertical, $padding-horizontal, $font-size, $line-height, $border-radius) {
           padding: $padding-vertical $padding-horizontal;
           font-size: $font-size;
           line-height: $line-height;
           border-radius: $border-radius;
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('variables - do not convert at-rule: @charset', () => {
-    var input = '@charset "utf-8";';
-    return run(input, input, {});
-});
+  let input = '@charset "utf-8";'
+  return run(input, input, {})
+})
 
 // it('variables - dont convert at-rule: @import', () => {
 //     var input = `
@@ -163,7 +147,7 @@ it('variables - do not convert at-rule: @charset', () => {
 // });
 
 it('variables - dont convert at-rule: @namespace', () => {
-    var input = `
+  let input = `
         @namespace url(http://www.w3.org/1999/xhtml);
         @namespace svg url(http://www.w3.org/2000/svg);
         
@@ -174,12 +158,12 @@ it('variables - dont convert at-rule: @namespace', () => {
         
         /* This matches both XHTML and SVG <a> elements */
         *|a {}
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variables - dont convert at-rule: @media', () => {
-    var input = `
+  let input = `
         /* Media query */
         @media screen and (min-width: 900px) {
           article {
@@ -195,12 +179,12 @@ it('variables - dont convert at-rule: @media', () => {
             }
           }
         }
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variables - dont convert at-rule: @support', () => {
-    var input = `
+  let input = `
         @supports (display: grid) {
           div {
             display: grid;
@@ -212,34 +196,23 @@ it('variables - dont convert at-rule: @support', () => {
             float: right;
           }
         }
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variables - dont convert at-rule: @document', () => {
-    var input = `
+  let input = `
         @document url("https://www.example.com/") {
           h1 {
             color: green;
           }
         }
-    `;
-    return run(input, input, {});
-});
-
-it('variables - dont convert at-rule: @document', () => {
-    var input = `
-        @document url("https://www.example.com/") {
-          h1 {
-            color: green;
-          }
-        }
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variables - dont convert at-rule: @page', () => {
-    var input = `
+  let input = `
         @page {
           margin: 1cm;
         }
@@ -247,23 +220,23 @@ it('variables - dont convert at-rule: @page', () => {
         @page :first {
           margin: 2cm;
         }
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variables - dont convert at-rule: @font-face', () => {
-    var input = `
+  let input = `
         @font-face {
           font-family: "Open Sans";
           src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2"),
                url("/fonts/OpenSans-Regular-webfont.woff") format("woff");
         }
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variables - dont convert at-rule: @keyframes', () => {
-    var input = `
+  let input = `
         @keyframes slidein {
           from {
             margin-left: 100%;
@@ -275,21 +248,21 @@ it('variables - dont convert at-rule: @keyframes', () => {
             width: 100%;
           }
         }
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variables - dont convert at-rule: @viewport', () => {
-    var input = `
+  let input = `
         @viewport {
           width: device-width;
         }
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variables - dont convert at-rule: @counter-style', () => {
-    var input = `
+  let input = `
         @counter-style thumbs {
           system: cyclic;
           symbols: "\\1F44D";
@@ -299,12 +272,12 @@ it('variables - dont convert at-rule: @counter-style', () => {
         ul {
           list-style: thumbs;
         }
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variables - dont convert at-rule: @font-feature-values', () => {
-    var input = `
+  let input = `
         /* At-rule for "nice-style" in Font One */
         @font-feature-values Font One {
           @styleset {
@@ -325,12 +298,12 @@ it('variables - dont convert at-rule: @font-feature-values', () => {
         .nice-look {
           font-variant-alternates: styleset(nice-style);
         }
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variables - dont convert @plugin At-rules of Less', () => {
-    var input = `
+  let input = `
         @plugin "my-plugin";
         .show-me-pi {
           value: pi();
@@ -343,12 +316,12 @@ it('variables - dont convert @plugin At-rules of Less', () => {
             @plugin "lib2";
             value: foo();
         }
-    `;
-    return run(input, input, {});
-});
+    `
+  return run(input, input, {})
+})
 
 it('variable interpolation - Selectors', () => {
-    var input = `
+  let input = `
         // Variables
         @my-selector: banner;
         
@@ -358,8 +331,8 @@ it('variable interpolation - Selectors', () => {
           line-height: 40px;
           margin: 0 auto;
         }
-    `;
-    var output = `
+    `
+  let output = `
         // Variables
         $my-selector: banner;
         
@@ -369,12 +342,12 @@ it('variable interpolation - Selectors', () => {
           line-height: 40px;
           margin: 0 auto;
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('variable interpolation - for at-rule, such as @media', () => {
-    var input = `
+  let input = `
         @screen-sm:                  768px;
         @screen-sm-min:              @screen-sm;
         
@@ -390,8 +363,8 @@ it('variable interpolation - for at-rule, such as @media', () => {
             }
           }
         }
-    `;
-    var output = `
+    `
+  let output = `
         $screen-sm:                  768px;
         $screen-sm-min:              $screen-sm;
         
@@ -407,9 +380,9 @@ it('variable interpolation - for at-rule, such as @media', () => {
             }
           }
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 //
 // mixin
@@ -419,7 +392,7 @@ it('variable interpolation - for at-rule, such as @media', () => {
  * https://github.com/twbs/bootstrap/blob/v3.4.0-dev/less/mixins/alerts.less
  */
 it('mixin - definition', () => {
-    var input = `
+  let input = `
         .alert-variant(@background; @border; @text-color) {
           background-color: @background;
           border-color: @border;
@@ -432,8 +405,8 @@ it('mixin - definition', () => {
             color: darken(@text-color, 10%);
           }
         }
-    `;
-    var output = `
+    `
+  let output = `
         @mixin alert-variant($background, $border, $text-color) {
           background-color: $background;
           border-color: $border;
@@ -446,58 +419,58 @@ it('mixin - definition', () => {
             color: darken($text-color, 10%);
           }
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('mixin - definition without params', () => {
-    var input = `
+  let input = `
         .center-block() {
           display: block;
           margin-left: auto;
           margin-right: auto;
         }
-    `;
-    var output = `
+    `
+  let output = `
         @mixin center-block() {
           display: block;
           margin-left: auto;
           margin-right: auto;
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('mixin - usage without parenthesis and parameters', () => {
-    var input = `
+  let input = `
         .a {
             .center-block;
         }
-    `;
-    var output = `
+    `
+  let output = `
         .a {
             @include center-block;
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('mixin - usage with parenthesis', () => {
-    var input = `
+  let input = `
         .a {
             .center-block();
         }
-    `;
-    var output = `
+    `
+  let output = `
         .a {
             @include center-block();
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('mixin - mixin usage - with parenthesis and parameters(convert spin to adjust_hue at the same time)', () => {
-    var input = `
+  let input = `
         @border-radius-base:        4px;
         
         //== Form states and alerts
@@ -570,8 +543,8 @@ it('mixin - mixin usage - with parenthesis and parameters(convert spin to adjust
         .alert-danger {
           .alert-variant(@alert-danger-bg; @alert-danger-border; @alert-danger-text);
         }
-    `;
-    var output = `
+    `
+  let output = `
         $border-radius-base:        4px;
         
         //== Form states and alerts
@@ -644,12 +617,12 @@ it('mixin - mixin usage - with parenthesis and parameters(convert spin to adjust
         .alert-danger {
           @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('mixin - definition - with default parameters', () => {
-    var input = `
+  let input = `
         @state-success-text:             #3c763d;
         @state-success-bg:               #dff0d8;
         @state-success-border:           darken(spin(@state-success-bg, -10), 5%);
@@ -717,8 +690,8 @@ it('mixin - definition - with default parameters', () => {
         .has-error {
           .form-control-validation(@state-danger-text; @state-danger-text; @state-danger-bg);
         }
-    `;
-    var output = `
+    `
+  let output = `
         $state-success-text:             #3c763d;
         $state-success-bg:               #dff0d8;
         $state-success-border:           darken(adjust_hue($state-success-bg, -10), 5%);
@@ -786,15 +759,15 @@ it('mixin - definition - with default parameters', () => {
         .has-error {
           @include form-control-validation($state-danger-text, $state-danger-text, $state-danger-bg);
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 //
 // Functions
 //
 it('Functions - string functions - e/~""(CSS escape with variable interpolation) - inside mixin usage', () => {
-    var input = `
+  let input = `
         @input-border-focus:             #66afe9;
 
         .box-shadow(@shadow) {
@@ -814,8 +787,8 @@ it('Functions - string functions - e/~""(CSS escape with variable interpolation)
         .form-control {
           .form-control-focus();
         }
-    `;
-    var output = `
+    `
+  let output = `
         $input-border-focus:             #66afe9;
 
         @mixin box-shadow($shadow) {
@@ -835,12 +808,12 @@ it('Functions - string functions - e/~""(CSS escape with variable interpolation)
         .form-control {
           @include form-control-focus();
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('Functions - string functions - e/~""(CSS escape without variable interpolation) - inside mixin usage', () => {
-    var input = `
+  let input = `
         @input-border-focus:             #66afe9;
 
         .transition(@transition) {
@@ -852,8 +825,8 @@ it('Functions - string functions - e/~""(CSS escape without variable interpolati
         .form-control {
           .transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
         }
-    `;
-    var output = `
+    `
+  let output = `
         $input-border-focus:             #66afe9;
 
         @mixin transition($transition) {
@@ -865,12 +838,12 @@ it('Functions - string functions - e/~""(CSS escape without variable interpolati
         .form-control {
           @include transition(#{border-color ease-in-out .15s, box-shadow ease-in-out .15s});
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('Functions - string functions - e/~"" - inside declaration values', () => {
-    var input = `
+  let input = `
         .hide-text() {
           font: ~"0/0" a;
           color: transparent;
@@ -887,8 +860,8 @@ it('Functions - string functions - e/~"" - inside declaration values', () => {
         .text-hide {
           .text-hide();
         }
-    `;
-    var output = `
+    `
+  let output = `
         @mixin hide-text() {
           font: #{0/0} a;
           color: transparent;
@@ -905,12 +878,12 @@ it('Functions - string functions - e/~"" - inside declaration values', () => {
         .text-hide {
           @include text-hide();
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('Functions - string functions - e/~"" - with variable interpolation', () => {
-    var input = `
+  let input = `
         @modal-backdrop-opacity:      .5;
         
         .opacity(@opacity) {
@@ -930,8 +903,8 @@ it('Functions - string functions - e/~"" - with variable interpolation', () => {
           &.fade { .opacity(0); }
           &.in { .opacity(@modal-backdrop-opacity); }
         }
-    `;
-    var output = `
+    `
+  let output = `
         $modal-backdrop-opacity:      .5;
         
         @mixin opacity($opacity) {
@@ -951,31 +924,31 @@ it('Functions - string functions - e/~"" - with variable interpolation', () => {
           &.fade { @include opacity(0); }
           &.in { @include opacity($modal-backdrop-opacity); }
         }
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 //
 // @import At-Rules
 //
 it('@import At-Rules - File Extensions', () => {
-    var input = `
+  let input = `
         @import "foo";
         @import "foo.less";
         @import "foo.php";
         @import "foo.css";
-    `;
-    var output = `
+    `
+  let output = `
         @import "foo";
         @import "foo";
         @import "foo";
         @import "foo.css";
-    `;
-    return run(input, output, {});
-});
+    `
+  return run(input, output, {})
+})
 
 it('@import At-Rules - File Extensions - bs example', () => {
-    var input = `
+  let input = `
         // with folder
         @import "mixins/alerts.less";
         // comment
@@ -1023,8 +996,8 @@ it('@import At-Rules - File Extensions - bs example', () => {
         
         @import "utilities.less";
         @import "responsive-utilities.less";
-    `;
-    var output = `
+    `
+  let output = `
         // with folder
         @import "mixins/alerts";
         // comment
@@ -1072,7 +1045,6 @@ it('@import At-Rules - File Extensions - bs example', () => {
         
         @import "utilities";
         @import "responsive-utilities";
-    `;
-    return run(input, output, {});
-});
-
+    `
+  return run(input, output, {})
+})
